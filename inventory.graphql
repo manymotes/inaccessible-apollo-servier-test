@@ -1,0 +1,20 @@
+directive @tag(name: String!) repeatable on FIELD_DEFINITION
+
+extend type Product @key(fields: "id") {
+  id: ID! @external @tag(name: "hi-from-inventory")
+  dimensions: ProductDimension @external
+  delivery(zip: String): DeliveryEstimates @requires(fields: "dimensions { size weight }")
+  test: Int @inaccessible
+}
+
+type ProductDimension {
+  size: String
+  weight: Float @tag(name: "hi-from-inventory-value-type-field")
+}
+
+type DeliveryEstimates {
+  estimatedDelivery: String
+  fastestDelivery: String
+}
+
+directive @inaccessible on FIELD_DEFINITION | INTERFACE | OBJECT | UNION | ARGUMENT_DEFINITION | SCALAR | ENUM | ENUM_VALUE | INPUT_OBJECT | INPUT_FIELD_DEFINITION
